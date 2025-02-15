@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkbox Table</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: auto;
+        }
+        td {
+            width: 50px; /* Adjust size as needed */
+            height: 50px;
+            border: 1px solid black;
+            text-align: center;
+        }
+        input[type="checkbox"] {
+            transform: scale(1.5); /* Make checkboxes larger if needed */
+        }
+        .gray {
+            background-color: lightgray;
+        }
+        .pupp {
+            background-color: rgb(218, 207, 218);
+        }
+    </style>
+    <script>
+        function readCheckboxValues() {
+            let pupp_val = document.getElementById("pupp_val");
+            let bupp_val = document.getElementById("bupp_val");
+            let checkboxes = document.querySelectorAll("input[type='checkbox']");
+            let values = Array.from(checkboxes).map(cb => cb.checked ? 1 : 0);
+            let PUPP = [values[14],values[7],values[0],values[15],values[8],values[1],values[16],values[9],values[2]];
+            let BUPP = [values[17],values[10],values[3],values[18],values[11],values[4],values[19],values[12],values[5]]
+
+            pupp_val.innerHTML = "PUPP: " + arrayToOctal(PUPP);
+            bupp_val.innerHTML = "BUPP: " + arrayToOctal(BUPP);
+        }
+
+        function arrayToOctal(arr) {
+            // Ensure the length is a multiple of 3 by padding with leading zeros
+            while (arr.length % 3 !== 0) {
+                arr.unshift(0);
+            }
+
+            // Convert every 3-bit group to a decimal and join as an octal string
+            let octal = "";
+            for (let i = 0; i < arr.length; i += 3) {
+                let decimal = (arr[i] << 2) | (arr[i + 1] << 1) | arr[i + 2];
+                octal += decimal.toString();
+            }
+
+            return octal;
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            document.querySelectorAll("input[type='checkbox']").forEach(cb => {
+                cb.addEventListener("change", readCheckboxValues);
+            });
+        });
+    </script>
+    <script>
+
+        let line = "MicroWord { implemented: false, CLK: 0, CIR: 0, WR: 0, CB: 0, CD: 0, CBA: 0, BUS: 0, DAD: 0, SPS: 0, ALU: 0, SBC: 0, SBM: 0, SDM: 0, SBA: 0, UBF: 0, SRX: 0, RIF: 0, UPF: 0 },";
+        let output = "";
+        for(let i = 0; i < 256; i++) {
+            let number = `${i}`.padStart(3, "0");
+            let numberOct = i.toString(8).padStart(3, "0");
+            output += `${line} // ${number} ${numberOct}\n`;
+        }
+
+        console.log(output);
+
+    </script>
+</head>
+<body>
+    <table>
+            <tr>
+                <th id="pupp_val" colspan="3">PUPP: 000</th>
+                <th id="bupp_val" colspan="3">BUPP: 000</th>
+            </tr>
+            <tr>
+                <td class="pupp">6<input type='checkbox'></td>
+                <td class="pupp">3<input type='checkbox'></td>
+                <td class="pupp">0<input type='checkbox'></td>
+                <td>6<input type='checkbox'></td>
+                <td>3<input type='checkbox'></td>
+                <td>0<input type='checkbox'></td>
+                <td class="gray"><input type='checkbox'></td>
+            </tr>
+            <tr>
+                <td class="pupp">7<input type='checkbox'></td>
+                <td class="pupp">4<input type='checkbox'></td>
+                <td class="pupp">1<input type='checkbox'></td>
+                <td>7<input type='checkbox'></td>
+                <td>4<input type='checkbox'></td>
+                <td>1<input type='checkbox'></td>
+                <td class="gray"><input type='checkbox'></td>
+            </tr>
+            <tr>
+                <td class="pupp">8<input type='checkbox'></td>
+                <td class="pupp">5<input type='checkbox'></td>
+                <td class="pupp">2<input type='checkbox'></td>
+                <td>8<input type='checkbox'></td>
+                <td>5<input type='checkbox'></td>
+                <td>2<input type='checkbox'></td>
+                <td class="gray"><input type='checkbox'></td>
+            </tr>
+            <tr>
+                <td class="gray"><input type='checkbox'></td>
+                <td class="gray"><input type='checkbox'></td>
+                <td class="gray"><input type='checkbox'></td>
+                <td class="gray"><input type='checkbox'></td>
+                <td class="gray"><input type='checkbox'></td>
+                <td class="gray"><input type='checkbox'></td>
+                <td class="gray"><input type='checkbox'></td>
+            </tr>
+    </table>
+</body>
+</html>
