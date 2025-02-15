@@ -6,23 +6,59 @@ use std::ops::Index;
 #[derive(Debug)]
 pub struct MicroWord  {
     pub implemented: bool,
+
+    /// Microprogram Field
     pub UPF: u8,    // UPF 08:00, 8 bits
+    
+    /// General Register Select
     pub RIF: u8,    // RIF0-RIF3 4 bits
+
+    /// Source of General Register Address
     pub SRX: u8,    // SRI, SRBA, SRD, SRS
+
+    /// Microbranch Field - Multiplexer input for BUT selection 
     pub UBF: u8,    // UBF0-UBF4 5bits
+    
+    /// Select Bus Address MUX Input
     pub SBA: u8,    // SBAM
+
+    /// Select DMUX Input
     pub SDM: u8,    // SDM0-SDM1 2 bits
+
+    /// Select BMUX Input
     pub SBM: u8,    // SBML SBMH
+
+    /// Select B Constant 
     pub SBC: u8,    // SBC0-SBC3 4 bits
+
+    /// Select ALU Operation
     pub ALU: u8,    // SALUM SALU0-SALU3 4 bit
+
+    /// Select Processor Status Word
     pub SPS: u8,    // SPS0-SPS2 3 bits
+
+    /// Discrete Alteration of Data
     pub DAD: u8,    // DAD0-DAD4 4 bits
+
+    /// Bus Controls
     pub BUS: u8,    // C1BUS C0BUS BGBUS
+
+    /// Clock Bus Address
     pub CBA: u8,    // CLKBA
+
+    /// Clock ALU Output into D REG
     pub CD: u8,     // CLKD
+
+    /// Clock DMUX into B
     pub CB: u8,     // CLKB
+
+    /// Write DMUX into General Register
     pub WR: u8,     // WRL, WRH
+
+    /// Clock Unibus Data into instruction register
     pub CIR: u8,    // CLKIR
+
+    /// Clock Mode
     pub CLK: u8,    // CLKIR, CLKOFF, CLKL0, CLKL1
 }
 
@@ -32,11 +68,12 @@ pub struct MicroRom([MicroWord; 256]);
 
 impl Index<usize> for MicroRom {
     type Output = MicroWord;
-
+    
+    // This will trigger a panic if an unimplemented micoword is addressed
     fn index(&self, index: usize) -> &Self::Output {
         let output = &self.0[index];
         if !output.implemented {
-            panic!("Unimplemented Micoword: {:o}", index);
+            todo!("Micoword: {:o}", index);
         }
         output
     }
@@ -79,10 +116,12 @@ pub static MICROROM: MicroRom = MicroRom([
     MicroWord { implemented: false, CLK: 0, CIR: 0, WR: 0, CB: 0, CD: 0, CBA: 0, BUS: 0, DAD: 0, SPS: 0, ALU: 0, SBC: 0, SBM: 0, SDM: 0, SBA: 0, UBF: 0, SRX: 0, RIF: 0, UPF: 0 }, // 033 041
     MicroWord { implemented: false, CLK: 0, CIR: 0, WR: 0, CB: 0, CD: 0, CBA: 0, BUS: 0, DAD: 0, SPS: 0, ALU: 0, SBC: 0, SBM: 0, SDM: 0, SBA: 0, UBF: 0, SRX: 0, RIF: 0, UPF: 0 }, // 034 042
     MicroWord { implemented: false, CLK: 0, CIR: 0, WR: 0, CB: 0, CD: 0, CBA: 0, BUS: 0, DAD: 0, SPS: 0, ALU: 0, SBC: 0, SBM: 0, SDM: 0, SBA: 0, UBF: 0, SRX: 0, RIF: 0, UPF: 0 }, // 035 043
-    MicroWord { implemented: true, CLK: 0, CIR: 0, WR: 0, CB: 0, CD: 0, CBA: 0, BUS: 0, DAD: 0, SPS: 0, ALU: 0, SBC: 0, SBM: 0, SDM: 0, SBA: 0, UBF: 0, SRX: 0, RIF: 0, UPF: 0 }, // 036 044
+    MicroWord { implemented: true, CLK: 0o6, CIR: 0o0, WR: 0o3, CB: 0o0, CD: 0o0, CBA: 0o0, BUS: 0o0, DAD: 0o00, SPS: 0o0, ALU: 0o00, SBC: 0o00, SBM: 0o00, SDM: 0o2, SBA: 0o0, UBF: 0o12, SRX: 0o01, RIF: 0o15, UPF: 0o047 }, // 036 044    | CON08 | TEST COUNT
     MicroWord { implemented: false, CLK: 0, CIR: 0, WR: 0, CB: 0, CD: 0, CBA: 0, BUS: 0, DAD: 0, SPS: 0, ALU: 0, SBC: 0, SBM: 0, SDM: 0, SBA: 0, UBF: 0, SRX: 0, RIF: 0, UPF: 0 }, // 037 045
     MicroWord { implemented: true, CLK: 0o2, CIR: 0o0, WR: 0o0, CB: 0o0, CD: 0o0, CBA: 0o0, BUS: 0o0, DAD: 0o00, SPS: 0o0, ALU: 0o00, SBC: 0o00, SBM: 0o00, SDM: 0o2, SBA: 0o0, UBF: 0o00, SRX: 0o00, RIF: 0o00, UPF: 0o026 }, // 038 046   | CONS06   | NO-OP FOR BUT
-    MicroWord { implemented: false, CLK: 0, CIR: 0, WR: 0, CB: 0, CD: 0, CBA: 0, BUS: 0, DAD: 0, SPS: 0, ALU: 0, SBC: 0, SBM: 0, SDM: 0, SBA: 0, UBF: 0, SRX: 0, RIF: 0, UPF: 0 }, // 039 047
+    
+    MicroWord { implemented: true, CLK: 0o6, CIR: 0o0, WR: 0o3, CB: 0o0, CD: 0o1, CBA: 0o0, BUS: 0o0, DAD: 0o00, SPS: 0o0, ALU: 0o11, SBC: 0o01, SBM: 0o17, SDM: 0o2, SBA: 0o0, UBF: 0o00, SRX: 0o01, RIF: 0o15, UPF: 0o44 }, // 039 047   | CON09 | INCREMENT COUNT | 
+    
     MicroWord { implemented: false, CLK: 0, CIR: 0, WR: 0, CB: 0, CD: 0, CBA: 0, BUS: 0, DAD: 0, SPS: 0, ALU: 0, SBC: 0, SBM: 0, SDM: 0, SBA: 0, UBF: 0, SRX: 0, RIF: 0, UPF: 0 }, // 040 050
     MicroWord { implemented: false, CLK: 0, CIR: 0, WR: 0, CB: 0, CD: 0, CBA: 0, BUS: 0, DAD: 0, SPS: 0, ALU: 0, SBC: 0, SBM: 0, SDM: 0, SBA: 0, UBF: 0, SRX: 0, RIF: 0, UPF: 0 }, // 041 051
     MicroWord { implemented: false, CLK: 0, CIR: 0, WR: 0, CB: 0, CD: 0, CBA: 0, BUS: 0, DAD: 0, SPS: 0, ALU: 0, SBC: 0, SBM: 0, SDM: 0, SBA: 0, UBF: 0, SRX: 0, RIF: 0, UPF: 0 }, // 042 052
