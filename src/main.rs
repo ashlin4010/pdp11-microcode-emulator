@@ -6,6 +6,7 @@ mod clock;
 mod microrom;
 mod microbranch_control;
 mod debug;
+mod data_path;
 
 use std::thread;
 use std::time::{self, Duration, Instant};
@@ -63,10 +64,13 @@ fn main() {
             println!("Current UBF = {:o}", MACHINE_STATE.U_WORD.UBF);
 
             // Test code only
-            let bconst = bconstant::evaluate_bconstant(&MACHINE_STATE, MACHINE_STATE.U_WORD.SBC);
-            println!("B Const {}", bconst);
-            MACHINE_STATE.D = bconst; // REMOVE THIS AFTER TESTING replace mux
-            MACHINE_STATE.DATA_DISPLAY = bconst;
+            let bConst = bconstant::evaluate_bconstant(&MACHINE_STATE, MACHINE_STATE.U_WORD.SBC);
+            let bMUX = data_path::evaluate_bmux(MACHINE_STATE.U_WORD.SBM, MACHINE_STATE.B, bConst);
+
+            println!("B Const {}", bConst);
+            println!("B MUX {}", bMUX);
+            MACHINE_STATE.D = bConst; // REMOVE THIS AFTER TESTING replace mux
+            MACHINE_STATE.DATA_DISPLAY = bConst;
 
 
             // At the end of the machine cycle latch the UWORD from the ROM

@@ -1,6 +1,23 @@
 use crate::machinestate::MachineState;
 
 // TODO: Complete Constant 00 to enable traps
+
+
+// In the hardware some of the b constant data lines do double duty
+// The true lines are as follows:
+//  BC00
+//  BC01
+//  BC02
+//  BC03
+//  BC04
+//  BC05
+//  BC06
+//  BC07
+//  BC(11,08)
+//  BC(15:12, 10:09)
+// In the case of the emulation we just do all 16 bits individually
+// we just need to make sure we generate the right constant
+
 pub fn evaluate_bconstant(state: &MachineState, sbc: u8) -> u16 {
     match sbc {
         0o00 => 0,

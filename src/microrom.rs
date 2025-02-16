@@ -103,7 +103,9 @@ pub static MICROROM: MicroRom = MicroRom([
     MicroWord { implemented: false, CLK: 0, CIR: 0, WR: 0, CB: 0, CD: 0, CBA: 0, BUS: 0, DAD: 0, SPS: 0, ALU: 0, SBC: 0, SBM: 0, SDM: 0, SBA: 0, UBF: 0, SRX: 0, RIF: 0, UPF: 0 }, // 020 024
     MicroWord { implemented: false, CLK: 0, CIR: 0, WR: 0, CB: 0, CD: 0, CBA: 0, BUS: 0, DAD: 0, SPS: 0, ALU: 0, SBC: 0, SBM: 0, SDM: 0, SBA: 0, UBF: 0, SRX: 0, RIF: 0, UPF: 0 }, // 021 025
     MicroWord { implemented: true, CLK: 0o6, CIR: 0o0, WR: 0o0, CB: 0o0, CD: 0o0, CBA: 0o0, BUS: 0o0, DAD: 0o00, SPS: 0o0, ALU: 0o00, SBC: 0o00, SBM: 0o00, SDM: 0o2, SBA: 0o0, UBF: 0o06, SRX: 0o00, RIF: 0o00, UPF: 0o046 }, // 022 026   | CON04   | TEST FOR SWITCH
+
     MicroWord { implemented: true, CLK: 0o4, CIR: 0o0, WR: 0o0, CB: 0o0, CD: 0o1, CBA: 0o0, BUS: 0o0, DAD: 0o00, SPS: 0o0, ALU: 0o32, SBC: 0o14, SBM: 0o17, SDM: 0o2, SBA: 0o0, UBF: 0o00, SRX: 0o00, RIF: 0o00, UPF: 0o044 }, // 023 027   | CON07   | CONTACT BOUNCE COUNT
+    
     MicroWord { implemented: false, CLK: 0, CIR: 0, WR: 0, CB: 0, CD: 0, CBA: 0, BUS: 0, DAD: 0, SPS: 0, ALU: 0, SBC: 0, SBM: 0, SDM: 0, SBA: 0, UBF: 0, SRX: 0, RIF: 0, UPF: 0 }, // 024 030
     MicroWord { implemented: false, CLK: 0, CIR: 0, WR: 0, CB: 0, CD: 0, CBA: 0, BUS: 0, DAD: 0, SPS: 0, ALU: 0, SBC: 0, SBM: 0, SDM: 0, SBA: 0, UBF: 0, SRX: 0, RIF: 0, UPF: 0 }, // 025 031
     MicroWord { implemented: false, CLK: 0, CIR: 0, WR: 0, CB: 0, CD: 0, CBA: 0, BUS: 0, DAD: 0, SPS: 0, ALU: 0, SBC: 0, SBM: 0, SDM: 0, SBA: 0, UBF: 0, SRX: 0, RIF: 0, UPF: 0 }, // 026 032

@@ -48,6 +48,9 @@ pub struct MachineState<'a> {
     // Cleared on: not sure
     pub SWITCH: bool,
 
+    // B Register
+    pub B: u16,
+
     // D Register
     pub D: u16,
 }
@@ -66,6 +69,7 @@ impl MachineState<'_> {
             BUBC: 0,
             BUBC_FLUX: 0,
             SWITCH: false,
+            B: 0,
             D: 0,
         }
     }
