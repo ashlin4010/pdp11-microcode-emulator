@@ -53,6 +53,9 @@ pub struct MachineState<'a> {
 
     // D Register
     pub D: u16,
+
+    // Unibus data
+    pub BUS_D: u16
 }
 
 
@@ -71,6 +74,7 @@ impl MachineState<'_> {
             SWITCH: false,
             B: 0,
             D: 0,
+            BUS_D: 0,
         }
     }
 }

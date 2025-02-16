@@ -64,11 +64,16 @@ fn main() {
             println!("Current UBF = {:o}", MACHINE_STATE.U_WORD.UBF);
 
             // Test code only
-            let bConst = bconstant::evaluate_bconstant(&MACHINE_STATE, MACHINE_STATE.U_WORD.SBC);
-            let bMUX = data_path::evaluate_bmux(MACHINE_STATE.U_WORD.SBM, MACHINE_STATE.B, bConst);
 
+            // evaluate everything on the BUS RD
+
+            let bConst = bconstant::evaluate_bconstant(&MACHINE_STATE, MACHINE_STATE.U_WORD.SBC);
+            let B_MUX = data_path::evaluate_bmux(MACHINE_STATE.U_WORD.SBM, MACHINE_STATE.B, bConst);
+            let D_MUX = data_path::evaluate_dmux(MACHINE_STATE.U_WORD.SDM, 0, 0, 0b11100011, 0);
+
+            println!("D_MUX: {:b}", D_MUX);
             println!("B Const {}", bConst);
-            println!("B MUX {}", bMUX);
+            println!("B MUX {}", B_MUX);
             MACHINE_STATE.D = bConst; // REMOVE THIS AFTER TESTING replace mux
             MACHINE_STATE.DATA_DISPLAY = bConst;
 
