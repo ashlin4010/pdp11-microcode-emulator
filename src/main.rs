@@ -6,7 +6,10 @@ mod clock;
 mod microrom;
 mod microbranch_control;
 mod debug;
-mod data_path;
+mod data_paths;
+mod constants;
+mod alu_74181;
+mod ir_decode;
 
 use std::thread;
 use std::time::{self, Duration, Instant};
@@ -66,10 +69,31 @@ fn main() {
             // Test code only
 
             // evaluate everything on the BUS RD
-
+            let BUS_RD = 0; // TODO: Added BUS RD
             let bConst = bconstant::evaluate_bconstant(&MACHINE_STATE, MACHINE_STATE.U_WORD.SBC);
-            let B_MUX = data_path::evaluate_bmux(MACHINE_STATE.U_WORD.SBM, MACHINE_STATE.B, bConst);
-            let D_MUX = data_path::evaluate_dmux(MACHINE_STATE.U_WORD.SDM, 0, 0, 0b11100011, 0);
+            let B_MUX = data_paths::evaluate_bmux(MACHINE_STATE.U_WORD.SBM, MACHINE_STATE.B, bConst);
+            let D_MUX = data_paths::evaluate_dmux(MACHINE_STATE.U_WORD.SDM, BUS_RD, 0, 0b11100011, 0);
+            
+            // TODO: Replace SXT
+            // TODO: Replace ESALU (0 when not installed)
+            let (SALUM, SALU) = ir_decode::evaluate_alu_mux(false, MACHINE_STATE.U_WORD.ALU, 0);
+            let (f, _, _, _, _) = data_paths::pdp_alu(SALUM, SALU, BUS_RD, B_MUX, false);
+
+            // ALU testing
+            let mode = 0;
+            let select = 0b0000;
+
+            let a = 0b1111111111111110;
+            let b = 0b0000100000000011;
+            let carry = !true;
+            let (f, _,_, _, _) = data_paths::pdp_alu(mode, select, a, b, carry);
+
+            println!("******************************************");
+            println!("ALU A: {:#018b}", a);
+            println!("ALU B: {:#018b}", b);
+            println!("ALU F: {:#018b}", f);
+            println!("******************************************");
+            
 
             println!("D_MUX: {:b}", D_MUX);
             println!("B Const {}", bConst);
@@ -100,7 +124,6 @@ fn main() {
                 // TODO: Clear switch
             }
         }
-
 
         // RE-CLOCK
         //  The next clock cycle must be known before the next machine cycle
