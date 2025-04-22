@@ -5,6 +5,7 @@ use std::ops::Index;
 #[allow(dead_code)]
 #[derive(Debug)]
 pub struct MicroWord  {
+    /// If implemented is not true when the microword is accessed the program will panic
     pub implemented: bool,
 
     /// Microprogram Field

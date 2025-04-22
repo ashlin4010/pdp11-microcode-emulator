@@ -1,8 +1,8 @@
 #![allow(non_snake_case)]
 
-use crate::{clock::{ClockState, CL1}, microrom::{MicroWord, MICROROM}};
+use crate::{clock::{ClockState, CL1}, microrom::{MicroWord, MICROROM}, constants};
 
-const SINGLE_CLOCK_MODE: bool = true;
+const SINGLE_CLOCK_MODE: bool = constants::SINGLE_CLOCK_MODE;
 const STARTING_UPP: u8 = 0;
 
 

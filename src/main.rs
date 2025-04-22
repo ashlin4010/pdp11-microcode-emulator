@@ -1,7 +1,7 @@
 #![allow(non_snake_case)]
 
 mod machinestate;
-mod bconstant;
+mod status;
 mod clock;
 mod microrom;
 mod microbranch_control;
@@ -21,7 +21,6 @@ use debug::{print_data_bus, print_diagnostic_tool};
 
 const SINGLE_STEP_EMULATION: bool = true;
 const MACHINE_CYCLE_SLEEP: Duration = time::Duration::from_millis(100);
-
 
 fn main() {
 
@@ -70,11 +69,11 @@ fn main() {
 
             // evaluate everything on the BUS RD
             let BUS_RD = 0; // TODO: Added BUS RD
-            let bConst = bconstant::evaluate_bconstant(&MACHINE_STATE, MACHINE_STATE.U_WORD.SBC);
+            let bConst = status::evaluate_bconstant(&MACHINE_STATE, MACHINE_STATE.U_WORD.SBC);
             let B_MUX = data_paths::evaluate_bmux(MACHINE_STATE.U_WORD.SBM, MACHINE_STATE.B, bConst);
             let D_MUX = data_paths::evaluate_dmux(MACHINE_STATE.U_WORD.SDM, BUS_RD, 0, 0b11100011, 0);
             
-            // TODO: Replace SXT
+            // TODO: Replace SXT - Select Extended Instruction Set (Probably)
             // TODO: Replace ESALU (0 when not installed)
             let (SALUM, SALU) = ir_decode::evaluate_alu_mux(false, MACHINE_STATE.U_WORD.ALU, 0);
             let (f, _, _, _, _) = data_paths::pdp_alu(SALUM, SALU, BUS_RD, B_MUX, false);

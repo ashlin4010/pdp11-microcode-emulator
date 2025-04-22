@@ -5,7 +5,7 @@ pub fn alu_slice(
     A: [bool; 4],
     B: [bool; 4],
     S: [bool; 4],
-    CIN: bool, M: bool) -> ([bool; 4], bool, bool, bool, bool){
+    CIN: bool, M: bool) -> ([bool; 4], bool, bool, bool, bool) {
         let [A0, A1, A2, A3] = A;
         let [B0, B1, B2, B3] = B;
         let [S0, S1, S2, S3] = S;
