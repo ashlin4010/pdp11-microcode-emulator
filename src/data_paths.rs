@@ -93,7 +93,14 @@ pub fn evaluate_cout_mux(COMUX: u8, COUT15: bool, COUT07: bool, PS_C_: u8, F: u1
 /// The D MUX is is used to route data internally the processor,
 /// it has 4 inputs and connects to approximately 5 destinations
 /// (Data Display, B Register, PS Register, Insrt Register and REG)
-pub fn evaluate_dmux(SDM: u8, BUS_RD: u16, BUS_D: u16, D: u16, D_C: u8) -> u16 {
+/// 
+/// ### Arguments
+/// * `SDM` - Microword (Select D Mux)
+/// * `BUS_RD` - Value on the RD Bus
+/// * `BUS_D` - Value on the Unibus Data Lines
+/// * `D_C` - Data Carry Bit
+/// * `` - 
+pub fn evaluate_dmux(SDM: u8, BUS_RD: u16, BUS_D: u16, D_REG: u16, D_C: u8) -> u16 {
     // 00 => BUS RD
     // 01 => BUS_D (Unibus data)
     // 10 => D REG
@@ -101,8 +108,8 @@ pub fn evaluate_dmux(SDM: u8, BUS_RD: u16, BUS_D: u16, D: u16, D_C: u8) -> u16 {
     match SDM {
         0b00 => BUS_RD,
         0b01 => BUS_D,
-        0b10 => D,
-        0b11 => (D >> 1) | ((D_C as u16) << 15),
+        0b10 => D_REG,
+        0b11 => (D_REG >> 1) | ((D_C as u16) << 15),
         _ => panic!("Invalid SDM: {:o}", SDM)
     }
 }

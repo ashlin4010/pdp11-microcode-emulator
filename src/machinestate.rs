@@ -54,6 +54,15 @@ pub struct MachineState<'a> {
     // D Register
     pub D: u16,
 
+    // Instruction Register
+    pub IR: u16,
+
+    // BA Register?
+    pub BA: u16,
+
+    // D(C) - Carry Data Register (K1-5 E21)
+    pub DATA_CARRY: u8,
+
     // Unibus data
     pub BUS_D: u16
 }
@@ -74,7 +83,26 @@ impl MachineState<'_> {
             SWITCH: false,
             B: 0,
             D: 0,
+            IR: 0,
+            BA: 0,
+            DATA_CARRY: 0,
             BUS_D: 0,
         }
+    }
+
+    pub fn set_B_register(&mut self, b: u16) {
+        self.B = b;
+    }
+
+    pub fn set_D_register(&mut self, d: u16) {
+        self.D = d;
+    }
+
+    pub fn set_IR_register(&mut self, ir: u16) {
+        self.IR = ir;
+    }
+
+    pub fn set_DATA_CARRY_register(&mut self, carry: u8) {
+        self.DATA_CARRY = carry;
     }
 }

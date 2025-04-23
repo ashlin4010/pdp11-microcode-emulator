@@ -65,40 +65,81 @@ fn main() {
             // For the next 140ms to 300ms the cpu will do stuff
             println!("Current UBF = {:o}", MACHINE_STATE.U_WORD.UBF);
 
+
+
+            // This code is new and being worked on *********************
+
+            // TODO: Set IR
+            let BUS_RD: u16 = 0; // TODO: BUS_RD
+            let BUS_D: u16 = 0; // TODO: BUS_D (unibus data lines)
+
+
+            let ESALU: u8 = 0; // TODO: ESALU
+            let ir = ir_decode::DecodedInstruction::new(MACHINE_STATE.IR,MACHINE_STATE.BA, MACHINE_STATE.U_WORD, MACHINE_STATE.DATA_CARRY);
+            let DAD2_DAD3_SXT = ir.SXT_L == 1; // TODO: Complete DAD2_DAD3_SXT
+            let (SALUM, SALU) = ir_decode::evaluate_alu_mux(DAD2_DAD3_SXT, MACHINE_STATE.U_WORD.ALU, ESALU);
+
+
+            // The ALU is directly connected to the D Resister
+            let C_IN = true; //TODO: C CIN00 K3-8
+            let PS_C_ = 0; // TODO: PS (C) K5-2
+            let B_CONST = status::evaluate_bconstant(&MACHINE_STATE, MACHINE_STATE.U_WORD.SBC);
+            let B_MUX = data_paths::evaluate_bmux(MACHINE_STATE.U_WORD.SBM, MACHINE_STATE.B, B_CONST);
+            let (F, COUT03, COUT07, COUT11, COUT15) = data_paths::pdp_alu(SALUM, SALU, BUS_RD, B_MUX, C_IN);
+            let C_MUX_OUT = data_paths::evaluate_cout_mux(ir.COMUX_H, COUT15, COUT07, PS_C_, F) as u8;
+            
+            // If P2 and CLKB (CLK D H)
+            if P2 && (MACHINE_STATE.U_WORD.CD == 1) {
+                MACHINE_STATE.set_D_register(F);
+                MACHINE_STATE.set_DATA_CARRY_register(C_MUX_OUT);
+            }
+            
+            // The DMUX is directly connected to the B Resister
+            let D_MUX = data_paths::evaluate_dmux(MACHINE_STATE.U_WORD.SDM, BUS_RD, BUS_D, MACHINE_STATE.D, MACHINE_STATE.DATA_CARRY);
+            
+            // If (P1 + P3) and CLKB
+            if (P1 || P3) && (MACHINE_STATE.U_WORD.CB == 1)  {
+                MACHINE_STATE.set_B_register(D_MUX);
+            }
+            
+
+            // **************************************************
+
+
             // Test code only
 
-            // evaluate everything on the BUS RD
-            let BUS_RD = 0; // TODO: Added BUS RD
-            let bConst = status::evaluate_bconstant(&MACHINE_STATE, MACHINE_STATE.U_WORD.SBC);
-            let B_MUX = data_paths::evaluate_bmux(MACHINE_STATE.U_WORD.SBM, MACHINE_STATE.B, bConst);
-            let D_MUX = data_paths::evaluate_dmux(MACHINE_STATE.U_WORD.SDM, BUS_RD, 0, 0b11100011, 0);
+            // // evaluate everything on the BUS RD
+            // let BUS_RD = 0; // TODO: Added BUS RD
+            // let bConst = status::evaluate_bconstant(&MACHINE_STATE, MACHINE_STATE.U_WORD.SBC);
+            // let B_MUX = data_paths::evaluate_bmux(MACHINE_STATE.U_WORD.SBM, MACHINE_STATE.B, bConst);
+            // let D_MUX = data_paths::evaluate_dmux(MACHINE_STATE.U_WORD.SDM, BUS_RD, 0, 0b11100011, 0);
             
-            // TODO: Replace SXT - Select Extended Instruction Set (Probably)
-            // TODO: Replace ESALU (0 when not installed)
-            let (SALUM, SALU) = ir_decode::evaluate_alu_mux(false, MACHINE_STATE.U_WORD.ALU, 0);
-            let (f, _, _, _, _) = data_paths::pdp_alu(SALUM, SALU, BUS_RD, B_MUX, false);
+            // // TODO: Replace SXT - Select Extended Instruction Set (Probably)
+            // // TODO: Replace ESALU (0 when not installed)
+            // let (SALUM, SALU) = ir_decode::evaluate_alu_mux(false, MACHINE_STATE.U_WORD.ALU, 0);
+            // let (f, _, _, _, _) = data_paths::pdp_alu(SALUM, SALU, BUS_RD, B_MUX, false);
 
-            // ALU testing
-            let mode = 0;
-            let select = 0b0000;
+            // // ALU testing
+            // let mode = 0;
+            // let select = 0b0000;
 
-            let a = 0b1111111111111110;
-            let b = 0b0000100000000011;
-            let carry = !true;
-            let (f, _,_, _, _) = data_paths::pdp_alu(mode, select, a, b, carry);
+            // let a = 0b1111111111111110;
+            // let b = 0b0000100000000011;
+            // let carry = !true;
+            // let (f, _,_, _, _) = data_paths::pdp_alu(mode, select, a, b, carry);
 
-            println!("******************************************");
-            println!("ALU A: {:#018b}", a);
-            println!("ALU B: {:#018b}", b);
-            println!("ALU F: {:#018b}", f);
-            println!("******************************************");
+            // println!("******************************************");
+            // println!("ALU A: {:#018b}", a);
+            // println!("ALU B: {:#018b}", b);
+            // println!("ALU F: {:#018b}", f);
+            // println!("******************************************");
             
 
-            println!("D_MUX: {:b}", D_MUX);
-            println!("B Const {}", bConst);
-            println!("B MUX {}", B_MUX);
-            MACHINE_STATE.D = bConst; // REMOVE THIS AFTER TESTING replace mux
-            MACHINE_STATE.DATA_DISPLAY = bConst;
+            // println!("D_MUX: {:b}", D_MUX);
+            // println!("B Const {}", bConst);
+            // println!("B MUX {}", B_MUX);
+            // MACHINE_STATE.D = bConst; // REMOVE THIS AFTER TESTING replace mux
+            // MACHINE_STATE.DATA_DISPLAY = bConst;
 
 
             // At the end of the machine cycle latch the UWORD from the ROM
